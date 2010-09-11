@@ -32,11 +32,96 @@ div.noscript {
     width: 900px;
 }
 
-#center-block {
-    background:#FFFFFF none repeat scroll 0 0;
-    margin-top:15px;
-    padding:5px;
+#header {
     position:relative;
+    clear:both;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#logo {
+    background-image:url(../images/logo.png);
+    background-repeat:no-repeat;
+    float:left;
+    width:140px;
+    height:40px;
+}
+
+#welcome-message {
+    position: relative;
+    float: right;
+    font-size: 8pt;
+    font-weight: normal;
+    font-family:'Lucida Sans Unicode','Lucida Grande',sans-serif;
+    margin-bottom: 5px;
+}
+
+#welcome-message span.first {
+    padding-left: 0px;
+}
+
+#welcome-message span {
+    padding-left: 15px;
+}
+
+#menu {
+float:right;
+font-family:sans-serif;
+font-weight:bold;
+height:27px;
+position:relative;
+}
+#menu li {
+display:block;
+float:left;
+line-height:28px;
+list-style-image:none;
+list-style-position:outside;
+list-style-type:none;
+}
+#menu li.cap {
+height:27px;
+width:5px;
+}
+#menu li.cap.left {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(../images/menu_bar_left.png) no-repeat scroll 0 0;
+}
+#menu li.cap.right {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(../images/menu_bar_right.png) no-repeat scroll 0 0;
+}
+#menu li.center {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(../images/menu_bar_center.png) repeat-x scroll 0 0;
+padding:0 15px;
+}
+#menu li.center a {
+color:white;
+text-decoration:none;
+}
+#menu li.center a:hover {
+color:#5A0087;
+}
+#menu li.current {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(../images/menu_bar_center_selected.png) repeat-x scroll 0 0;
+}
+
+#center-block {
+    position: relative;
+    clear: both;
+    background: #FFFFFF none repeat scroll 0 0;
+    margin-top: 15px;
+    padding: 5px;
 	box-shadow: 			0px 0px 6px #888;
 	-o-box-shadow:			0px 0px 6px #888;
 	-moz-box-shadow:		0px 0px 6px #888;
