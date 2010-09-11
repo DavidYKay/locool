@@ -32,6 +32,7 @@ class MainHandler(BaseRequestHandler):
 
 
 def main():
+    logging.getLogger().setLevel(logging.DEBUG)
     application = webapp.WSGIApplication([('/', MainHandler)], debug=True)
     util.run_wsgi_app(application)
 
