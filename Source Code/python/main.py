@@ -27,9 +27,6 @@ as it handles some complex authentication states that can only be detected
 in client-side code.
 """
 
-FACEBOOK_APP_ID     = '82d03be712b2773aa7cc3774195e125e'
-FACEBOOK_APP_SECRET = '06aa97dd6904eba7781307922abd5aff'
-
 import base64
 import cgi
 import Cookie
@@ -53,29 +50,24 @@ sys.path.append('.')
 sys.path.append('other')
 from BaseHandler import BaseHandler
 from map import MapHandler
+from model import User
 
-class User(db.Model):
-    id = db.StringProperty(required=True)
-    created = db.DateTimeProperty(auto_now_add=True)
-    updated = db.DateTimeProperty(auto_now=True)
-    name = db.StringProperty(required=True)
-    profile_url = db.StringProperty(required=True)
-    access_token = db.StringProperty(required=True)
-
-
-
+""" Handles primitive home screen
+"""
 class HomeHandler(BaseHandler):
     def get(self):
         path = os.path.join(os.path.dirname(__file__), "../html/oauth.html")
         args = dict(current_user=self.current_user)
         self.response.out.write(template.render(path, args))
 
+""" Go to login screen
+"""
 class LoginHandler(BaseHandler):
     def get(self):
         verification_code = self.request.get("code")
-        args = dict(client_id=FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
+        args = dict(client_id=BaseHandler.FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
         if self.request.get("code"):
-            args["client_secret"] = FACEBOOK_APP_SECRET
+            args["client_secret"] = BaseHandler.FACEBOOK_APP_SECRET
             args["code"] = self.request.get("code")
             response = cgi.parse_qs(urllib.urlopen(
                 "https://graph.facebook.com/oauth/access_token?" +
@@ -91,7 +83,7 @@ class LoginHandler(BaseHandler):
                         name=profile["name"], access_token=access_token,
                         profile_url=profile["link"])
             user.put()
-            set_cookie(self.response, "fb_user", str(profile["id"]),
+            self.set_cookie(self.response, "fb_user", str(profile["id"]),
                        expires=time.time() + 30 * 86400)
             self.redirect("/")
         else:
@@ -102,57 +94,12 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        set_cookie(self.response, "fb_user", "", expires=time.time() - 86400)
+        self.set_cookie(self.response, "fb_user", "", expires=time.time() - 86400)
         self.redirect("/")
-
-
-def set_cookie(response, name, value, domain=None, path="/", expires=None):
-    """Generates and signs a cookie for the give name/value"""
-    timestamp = str(int(time.time()))
-    value = base64.b64encode(value)
-    signature = cookie_signature(value, timestamp)
-    cookie = Cookie.BaseCookie()
-    cookie[name] = "|".join([value, timestamp, signature])
-    cookie[name]["path"] = path
-    if domain: cookie[name]["domain"] = domain
-    if expires:
-        cookie[name]["expires"] = email.utils.formatdate(
-            expires, localtime=False, usegmt=True)
-    response.headers._headers.append(("Set-Cookie", cookie.output()[12:]))
-
-
-def parse_cookie(value):
-    """Parses and verifies a cookie value from set_cookie"""
-    if not value: return None
-    parts = value.split("|")
-    if len(parts) != 3: return None
-    if cookie_signature(parts[0], parts[1]) != parts[2]:
-        logging.warning("Invalid cookie signature %r", value)
-        return None
-    timestamp = int(parts[1])
-    if timestamp < time.time() - 30 * 86400:
-        logging.warning("Expired cookie %r", value)
-        return None
-    try:
-        return base64.b64decode(parts[0]).strip()
-    except:
-        return None
-
-
-def cookie_signature(*parts):
-    """Generates a cookie signature.
-
-    We use the Facebook app secret since it is different for every app (so
-    people using this example don't accidentally all use the same secret).
-    """
-    hash = hmac.new(FACEBOOK_APP_SECRET, digestmod=hashlib.sha1)
-    for part in parts: hash.update(part)
-    return hash.hexdigest()
 
 
 """ Handles all of the Static Content Pages
 """
-#class StaticHandler(BaseRequestHandler):
 class StaticHandler(BaseHandler):
     def get(self):
             #user = self.checkFacebookCredentials()
@@ -176,7 +123,11 @@ class StaticHandler(BaseHandler):
         my_response = template.render(''.join(['../html', request_url, '.htm']), values)
         self.response.out.write(my_response)
 
+""" Entry point to the entire web app
+"""
 def main():
+    logging.getLogger().setLevel(logging.DEBUG)
+
     util.run_wsgi_app(webapp.WSGIApplication([
         (r"/", MapHandler),
         (r"/home", HomeHandler),
@@ -188,4 +139,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

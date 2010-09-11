@@ -8,7 +8,6 @@ import facebook
 import logging
 import os
 
-#from BaseRequestHandler import BaseRequestHandler
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
@@ -18,34 +17,35 @@ import sys
 sys.path.append('../other')
 from BaseHandler import BaseHandler
 
+""" Handler for mapview
+"""
 class MapHandler(BaseHandler):
     def get(self):
         #user = self.checkFacebookCredentials()
-        user = None
+        #user = None
+        user = self.current_user
         self.render(user)
 
     def render(self, user):
         #values = {'API_KEY': self.API_KEY}
         values = {'API_KEY': 1234}
-        #if user:
-        #    values['LOGGED_IN'] = True
-        #    values['USER_NAME'] = user['name']
-        #    values['USER_ID'] = user['uid']
-        #else:
-        #    values['LOGGED_IN'] = False
-        #    values['LOGIN_LINK'] = self.createLoginUrl(self.request.uri)
-        values['LOGGED_IN'] = True
-        values['USER_NAME'] = "John Smith"
-        values['USER_ID'] = 123456
+        #values['LOGGED_IN'] = True
+        #values['USER_NAME'] = "John Smith"
+        #values['USER_ID'] = 123456
+        if user:
+            values['LOGGED_IN'] = True
+            #values['USER_NAME'] = user['name']
+            #values['USER_ID'] = user['uid']
+            values['USER_NAME'] = user.name
+            values['USER_ID'] = user.id
+            #values['USER_NAME'] = "IT WORKED"
+            #values['USER_ID'] = 1234
+        else:
+            values['LOGGED_IN'] = False
+            #values['LOGIN_LINK'] = self.createLoginUrl(self.request.uri)
+            values['LOGIN_LINK'] = self.createLoginUrl(self.request.uri)
+        if (user):
+            logging.debug("Current user: " + str(user))
+        else:
+            logging.debug("User NULL")
         self.response.out.write(template.render('../html/map.htm', values))
-        #self.response.out.write(template.render('../html/map.htm'))
-
-#def main():
-#    logging.getLogger().setLevel(logging.DEBUG)
-#    application = webapp.WSGIApplication([('/', MainHandler)], debug=True)
-#    util.run_wsgi_app(application)
-#
-#
-#if __name__ == '__main__':
-#    main()
-
