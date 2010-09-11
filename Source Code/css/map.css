@@ -1,0 +1,50 @@
+#map-info-window {
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+    padding: 10px;
+    width: 300px;
+}
+
+#map-info-window #title {
+	font-size: 11pt;
+    color: #4E9B3C;
+}
+
+#map-info-window .address {
+    font-size: 7pt;
+    color: gray;
+}
+
+#map-info-window .address.first {
+    margin-top: 5px;
+}
+
+#map-info-window #image {
+    margin-top: 15px;
+    color: gray;
+    font-size: 9pt;
+}
+
+#map-info-window #add-to-favorites {
+    margin-top: 15px;
+}
+
+#map-info-window #add-to-favorites:hover {
+    cursor: pointer;
+}
+
+#map-info-window #add-favorite-icon {
+    position: relative;
+    float: left;
+    background: url(../images/favorite_venue.png) no-repeat scroll 0 0;
+    width: 16px;
+    height: 16px;
+}
+
+#map-info-window #add-favorite-text {
+    position: relative;
+    float: left;
+    font-size: 7pt;
+    color: orange;
+    margin-left: 8px;
+    line-height: 12pt;
+}

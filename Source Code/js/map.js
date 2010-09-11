@@ -18,18 +18,13 @@ function renderPlacesMap() {
 			}, 
 			function(the_map, drawMapMarkers) {
 				google.maps.event.addListenerOnce(the_map, 'tilesloaded', function() {
-/*
                     var request_data = {
                         'lat': user_latlng.lat(),
-                        'lon': user_latlng.lng(),
-                        'rpp': 25,
-                        'radius': 1,
-                        'sort': 'dist'
+                        'lng': user_latlng.lng()
                     };
-                	$.getJSON('deals', request_data, function(data) {
-                            drawMapMarkers(data.offer);
+                	$.getJSON('venues', request_data, function(data) {
+                            drawMapMarkers(data.venues);
                     });
-*/
 				});
 			}, 
 			map_icons, 
@@ -118,8 +113,8 @@ function renderMap(user_latlng, ip_geolocation, createMap, drawMapMarkers, marke
 
 		$.each(data, function(i, item) {
 			has_favorites = true;
-			item_lat = parseFloat(item.latitude);
-			item_lng = parseFloat(item.longitude);
+			item_lat = parseFloat(item.lat);
+			item_lng = parseFloat(item.lng);
 			var my_latlng = new google.maps.LatLng(item_lat, item_lng);
 			var poiMarker = new google.maps.Marker({
 				position: my_latlng,
@@ -129,6 +124,7 @@ function renderMap(user_latlng, ip_geolocation, createMap, drawMapMarkers, marke
 			});
 
             google.maps.event.addListener(poiMarker, 'click', function() {
+                
                 if (item.offer_description) {
                     var deal_description = item.offer_description;
                 }
@@ -142,17 +138,21 @@ function renderMap(user_latlng, ip_geolocation, createMap, drawMapMarkers, marke
                     var venue_pic = 'images/venue_placeholder.png';
                 }
 
-                var venue_id = item.listing_id;
-                var name = item.listing_name;
-                var category = 'shopping';
-                var address_1 = item.street;
-                var address_2 = item.city + ', ' + item.state;
+                var venue_id = item.venue_id;
+                var name = item.name;
+                var address_1 = item.address1;
+                var address_2 = item.address2;
+                if (address_2 == null) {
+                    address_2 = '';
+                }
+                var address_3 = item.address3;
                 var venue_lat = item.latitude;
                 var venue_lng = item.longitude;
-                var contact_level = 'medium';
                 
-                $("#info-window-html-template #map-info-window #title").html(item.listing_name);
-                $("#info-window-html-template #map-info-window #details").html(deal_description);
+                $("#info-window-html-template #map-info-window #title").html(name);
+                $("#info-window-html-template #map-info-window #address1").html(address_1);
+                $("#info-window-html-template #map-info-window #address2").html(address_2);
+                $("#info-window-html-template #map-info-window #address3").html(address_3);
                 $("#info-window-html-template #map-info-window #image").html('<img src="' + venue_pic + '"/>');
                 var content_html = $("#info-window-html-template").html();
                 info_window = new google.maps.InfoWindow({
@@ -163,34 +163,36 @@ function renderMap(user_latlng, ip_geolocation, createMap, drawMapMarkers, marke
                 }
                 open_info_window = info_window;
                 google.maps.event.addListenerOnce(info_window, 'domready', function() {
-                    $("#map-info-window #title").html(item.listing_name);
-                    $("#map-info-window #details").html(deal_description);
+                    $("#map-info-window #title").html(name);
+                    $("#map-info-window #address1").html(address_1);
+                    $("#map-info-window #address2").html(address_2);
+                    $("#map-info-window #address3").html(address_3);
                     $("#map-info-window #image").html('<img src="' + venue_pic + '"/>');
                     $("#map-info-window #add-to-favorites").click(function() {
+                        alert('Some other time');
+/*
                     	var postData = {};
                     	var jsonObject = {};
-                    	jsonObject["action"] = 'insert_into_new_spot';
+                    	jsonObject["action"] = 'save_favorite';
                     	jsonObject["venue_id"] = venue_id;
                     	jsonObject["name"] = name;
-                    	jsonObject["category"] = category;
                     	jsonObject["address_1"] = address_1;
                     	jsonObject["address_2"] = address_2;
+                    	jsonObject["address_3"] = address_3;
                     	jsonObject["lat"] = venue_lat;
                     	jsonObject["lng"] = venue_lng;
-                    	jsonObject["contact_level"] = contact_level;
                     	postData["post_data"] = JSON.stringify(jsonObject);
                     	$.ajax({
                     		type : 'POST',
-                    		url : 'venue_update',
+                    		url : 'favorites',
                     		dataType : 'json',
                     		data : postData,
                     		success : function(msg) {
-                    		    window.location = 'my_account?tab=favorites&added_venue_id=' + venue_id;
                     		},
                     		error: function() {
-                    		    alert("Sorry, couldn't add it to your favorites. You don't have any free spots.");
                     		}
                     	});
+*/
                     });
                 });
                 info_window.open(the_map, poiMarker);
@@ -230,7 +232,46 @@ function renderMap(user_latlng, ip_geolocation, createMap, drawMapMarkers, marke
 	});
 }
 
+function getNewMinMaxLatLng() {
+	var ret_val = new Object();
+	ret_val.min_lat = 90.1;
+	ret_val.min_lng = 180.1;
+	ret_val.max_lat = -90.1;
+	ret_val.max_lng = -180.1;
+	ret_val.is_valid = false;
+	return ret_val;
+}
+
+function findMinMaxLatLng(data, getLat, getLng) {
+	var ret_val = getNewMinMaxLatLng();
+	$.each(data, function(i, item) {
+		ret_val = adjustMinMax(ret_val, getLat(item), getLng(item));
+	});
+	return ret_val;
+}
+
+function adjustMinMax(min_max_lat_lng, additional_lat, additional_lng) {
+	if (additional_lat < min_max_lat_lng.min_lat) {
+		min_max_lat_lng.is_valid = true;
+		min_max_lat_lng.min_lat = additional_lat;
+	}
+	if (additional_lng < min_max_lat_lng.min_lng) {
+		min_max_lat_lng.is_valid = true;
+		min_max_lat_lng.min_lng = additional_lng;
+	}
+	if (additional_lat > min_max_lat_lng.max_lat) {
+		min_max_lat_lng.is_valid = true;
+		min_max_lat_lng.max_lat = additional_lat;
+	}
+	if (additional_lng > min_max_lat_lng.max_lng) {
+		min_max_lat_lng.is_valid = true;
+		min_max_lat_lng.max_lng = additional_lng;
+	}
+	return min_max_lat_lng;
+}
+
 $(document).ready(function(){
+    $("#the-map").html('<div>Loading...</div>');
 	$("#the-map").corner('4px');
     $("#the-map").height('500px');
     renderPlacesMap();
