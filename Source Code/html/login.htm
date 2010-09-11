@@ -19,27 +19,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="floating_box">
+<div class="box">
     <script src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php/en_US" type="text/javascript"></script>
     <script type="text/javascript">FB.init("{{ API_KEY }}", "xd_receiver.html");</script>
 	<div class="method-panel">
 		<fb:login-button v="2" onlogin='window.location="{{ ON_LOGIN_URL }}";' size="large">Connect with Facebook</fb:login-button>
-	</div>
-	<div class="method-panel not-first">
-		<form>
-		<div>
-			<div style="position: relative; float: left; width: 6em;">User name</div>
-			<input type="text" disabled="disabled"></input>
-		</div>
-		<div>
-			<div style="position: relative; float: left; width: 6em;">Password</div>
-			<input type="password" disabled="disabled"></input>
-		</div>
-		<div>
-			<div style="position: relative; float: left; width: 6em; height: 1px;"></div>
-			<input type="submit" id="submit" value="Log in" disabled="disabled">
-		</div>
-		</form>
 	</div>
 </div>
 {% endblock %}

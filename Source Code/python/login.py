@@ -21,9 +21,9 @@ class MainHandler(webapp.RequestHandler):
 
     def render(self):
         if os.environ['SERVER_SOFTWARE'].startswith('Development'):
-            self.API_KEY = '56645e5032228b6596da9b3678509f9b'
+            self.API_KEY = '82d03be712b2773aa7cc3774195e125e'
         else:
-            self.API_KEY = '58dc73c9e414a926bc46307144b2661c'
+            self.API_KEY = '82d03be712b2773aa7cc3774195e125e'
         my_response = template.render('../html/login.htm', {
             'API_KEY': self.API_KEY,
             'HIDE_MENU': True,

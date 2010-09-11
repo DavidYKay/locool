@@ -19,7 +19,9 @@ handlers:
   static_files: html/xd_receiver.html
   upload: html/xd_receiver.html
 - url: /
-  script: python/main.py
+  script: python/map.py
+- url: /map
+  script: python/map.py
 - url: /about
   script: python/static.py
 - url: /instructions
