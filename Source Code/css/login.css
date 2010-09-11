@@ -1,0 +1,26 @@
+div.floating_box {
+	border: 0px solid #ffffff;
+	height: 400px;
+}
+
+div.floating_box {
+	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+	font-size: 11pt;
+	line-height: 17pt;
+	font-weight: normal;
+}
+
+div.method-panel {
+	position: relative;
+	float: left;
+    padding: 163px 100px;
+}
+
+div.not-first {
+    border-left: 1px solid lightGray;
+}
+
+a:hover {
+    cursor: pointer;
+    text-decoration: none;
+}

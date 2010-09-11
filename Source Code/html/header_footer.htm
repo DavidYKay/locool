@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta name="description" content="LoCool helps you find the places that are right for you." /> 
+    {% block google-maps-viewport %}{% endblock %}
+    <link type="text/css" rel="stylesheet" href="css/reset.css">
+    <link type="text/css" rel="stylesheet" href="css/header_footer.css">
+    {% block css-files %}{% endblock %}
+	<script type="text/javascript" language="javascript" src="lib/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="lib/jquery.corner.js"></script>
+    <script type="text/javascript" language="javascript" src="lib/jquery.boxshadow.js"></script>
+    <script type="text/javascript" language="javascript" src="js/header_footer.js"></script>
+    {% block js-files %}{% endblock %}
+    <title>LoCool</title>
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript">
+        Your web browser must have JavaScript enabled in order for this website to display correctly.
+      </div>
+    </noscript>
+    <div id="frame">
+        <div class="row" id="header">
+            <a href="/"><div id="logo"></div></a>
+            {% if not HIDE_MENU %}
+            <div id="menu">
+                {% if LOGGED_IN %}
+					<div id="welcome-message">
+                        Hi, {{ USER_NAME }}!<span><a href="#" onclick="FB.Connect.logoutAndRedirect('.'); return false;">Log out</a></span>
+                    </div>
+                {% else %}
+					<div id="welcome-message">
+	                    <a href="{{ LOGIN_LINK }}">Log In</a>
+	                </div>
+                {% endif %}
+                <ul>
+                    <li class="cap left"></li>
+                    <li class="center{% block map-selected %}{% endblock %}"><a href="/about">Map</a></li>
+                    <li class="center{% block about-selected %}{% endblock %}"><a href="/about">About</a></li>
+                    <li class="center{% block instructions-selected %}{% endblock %}"><a href="instructions">Instructions</a></li>
+                    <li class="cap right"></li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+        <div id="center-block">
+			{% block content %}
+			{% endblock %}
+        </div>
+    </div>
+  </body>
+</html>

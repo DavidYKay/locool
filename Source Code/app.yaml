@@ -1,0 +1,28 @@
+application: untrapme
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /css
+  static_dir: css
+- url: /images
+  static_dir: images
+- url: /js
+  static_dir: js
+- url: /lib
+  static_dir: lib
+- url: /favicon.ico
+  static_files: images/favicon.ico
+  upload: images/favicon.ico
+- url: /xd_receiver.html
+  static_files: html/xd_receiver.html
+  upload: html/xd_receiver.html
+- url: /
+  script: python/main.py
+- url: /about
+  script: python/static.py
+- url: /instructions
+  script: python/static.py
+- url: /login
+  script: python/login.py
