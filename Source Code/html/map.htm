@@ -14,4 +14,17 @@
 {% block map-selected %} current{% endblock %}
 {% block content %}
 	<div id="the-map"></div>
+    <div style="display: none;" id="info-window-html-template">
+        <div id="map-info-window">
+            <div id="title"></div>
+            <div class="address first" id="address1"></div>
+            <div class="address" id="address2"></div>
+            <div class="address" id="address3"></div>
+            <div id="image"></div>
+            <div id="add-to-favorites">
+                <div id="add-favorite-icon"></div>
+                <div id="add-favorite-text">add this venue to my favorites</div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

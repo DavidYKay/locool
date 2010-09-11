@@ -20,6 +20,8 @@ handlers:
   upload: html/xd_receiver.html
 - url: /
   script: python/map.py
+- url: /venues
+  script: python/venues.py
 - url: /map
   script: python/map.py
 - url: /about
