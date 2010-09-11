@@ -30,7 +30,6 @@ in client-side code.
 FACEBOOK_APP_ID     = '82d03be712b2773aa7cc3774195e125e'
 FACEBOOK_APP_SECRET = '06aa97dd6904eba7781307922abd5aff'
 
-
 import base64
 import cgi
 import Cookie
@@ -51,8 +50,9 @@ from google.appengine.ext.webapp import template
 
 import sys
 sys.path.append('.')
+sys.path.append('other')
+from BaseHandler import BaseHandler
 from map import MapHandler
-from BaseRequestHandler import BaseRequestHandler
 
 class User(db.Model):
     id = db.StringProperty(required=True)
@@ -63,24 +63,12 @@ class User(db.Model):
     access_token = db.StringProperty(required=True)
 
 
-class BaseHandler(webapp.RequestHandler):
-    @property
-    def current_user(self):
-        """Returns the logged in Facebook user, or None if unconnected."""
-        if not hasattr(self, "_current_user"):
-            self._current_user = None
-            user_id = parse_cookie(self.request.cookies.get("fb_user"))
-            if user_id:
-                self._current_user = User.get_by_key_name(user_id)
-        return self._current_user
-
 
 class HomeHandler(BaseHandler):
     def get(self):
         path = os.path.join(os.path.dirname(__file__), "../html/oauth.html")
         args = dict(current_user=self.current_user)
         self.response.out.write(template.render(path, args))
-
 
 class LoginHandler(BaseHandler):
     def get(self):
@@ -161,11 +149,14 @@ def cookie_signature(*parts):
     for part in parts: hash.update(part)
     return hash.hexdigest()
 
+
 """ Handles all of the Static Content Pages
 """
-class StaticHandler(BaseRequestHandler):
+#class StaticHandler(BaseRequestHandler):
+class StaticHandler(BaseHandler):
     def get(self):
-            user = self.checkFacebookCredentials()
+            #user = self.checkFacebookCredentials()
+            user = None
             self.render(user)
 
     def render(self, user):
@@ -187,15 +178,14 @@ class StaticHandler(BaseRequestHandler):
 
 def main():
     util.run_wsgi_app(webapp.WSGIApplication([
-        #('/map', MapHandler),
+        (r"/", MapHandler),
         (r"/home", HomeHandler),
         (r"/auth/login", LoginHandler),
         (r"/auth/logout", LogoutHandler),
-        (r"/", MapHandler),
-        #(r"/yarbles", TestHandler),
         ('/about', StaticHandler), 
         ('/instructions', StaticHandler),
     ]))
 
 if __name__ == "__main__":
     main()
+

@@ -8,7 +8,8 @@ import facebook
 import logging
 import os
 
-from BaseRequestHandler import BaseRequestHandler
+#from BaseRequestHandler import BaseRequestHandler
+from main import BaseHandler
 from django.utils import simplejson
 from google.appengine.api import users
 from google.appengine.ext import webapp
