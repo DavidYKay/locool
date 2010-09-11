@@ -38,8 +38,10 @@ class MainHandler(BaseRequestHandler):
 
 
 def main():
-    application = webapp.WSGIApplication([('/about', MainHandler), 
-                                          ('/instructions', MainHandler)], debug=True)
+    application = webapp.WSGIApplication( [
+        ('/about', MainHandler), 
+        ('/instructions', MainHandler)
+    ], debug=True)
     util.run_wsgi_app(application)
 
 

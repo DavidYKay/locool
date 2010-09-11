@@ -14,7 +14,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
 
-class MainHandler(BaseRequestHandler):
+class MapHandler(BaseRequestHandler):
     def get(self):
         user = self.checkFacebookCredentials()
         self.render(user)
@@ -31,11 +31,11 @@ class MainHandler(BaseRequestHandler):
         self.response.out.write(template.render('../html/map.htm', values))
 
 
-def main():
-    logging.getLogger().setLevel(logging.DEBUG)
-    application = webapp.WSGIApplication([('/', MainHandler)], debug=True)
-    util.run_wsgi_app(application)
-
-
-if __name__ == '__main__':
-    main()
+#def main():
+#    logging.getLogger().setLevel(logging.DEBUG)
+#    application = webapp.WSGIApplication([('/', MainHandler)], debug=True)
+#    util.run_wsgi_app(application)
+#
+#
+#if __name__ == '__main__':
+#    main()
