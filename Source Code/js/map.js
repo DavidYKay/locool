@@ -175,8 +175,11 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
 	var has_venues = false;
 
 	$.each(data, function(i, item) {
-	    console.log('ITEM LOCAL SCORE: ' + item.local);
-	    console.log('ITEM PRICE SCORE: ' + item.price);
+		item_lat = parseFloat(item.lat);
+		item_lng = parseFloat(item.lng);
+        
+        // console.log('VENUE: -------------> ' + item.local + ' ' + item.price + ' ' + item.name);
+        
 	    if (
 	        item.local >= local - 1 && item.local <= local + 1 
 	        &&
@@ -186,8 +189,6 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
 		
     		renderListItem(item);
 		
-    		item_lat = parseFloat(item.lat);
-    		item_lng = parseFloat(item.lng);
     		var my_latlng = new google.maps.LatLng(item_lat, item_lng);
     		var poiMarker = new google.maps.Marker({
     			position: my_latlng,
@@ -226,8 +227,8 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
             
             });
     		marker_list[item.venue_id] = poiMarker;
-    		min_max_lat_lng = adjustMinMax(min_max_lat_lng, item_lat, item_lng);
 	    }
+		min_max_lat_lng = adjustMinMax(min_max_lat_lng, item_lat, item_lng);
 	});
 
 	if (has_venues) {
@@ -473,21 +474,30 @@ function updateSearchResults(name, value) {
         timeofday = $("#controls #slider-timeofday").slider('value');
     }
     
-    // var request_data = {
-    //     'lat': user_html5_latlng.lat(),
-    //     'lng': user_html5_latlng.lng(),
-    //     'where': encodeURIComponent(where),
-    //     'when': encodeURIComponent(when),
-    //     'local': encodeURIComponent(local),
-    //     'social': encodeURIComponent(social),
-    //     'popularity': encodeURIComponent(popularity),
-    //     'price': encodeURIComponent(price),
-    //     'timeofday': encodeURIComponent(timeofday)
-    // };
-
-    var map_icons = {};
-    map_icons.venue = 'images/venue.png';
-    drawPOI(serverData.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
+    if (name == 'where') {
+        var request_data = {
+            'lat': user_html5_latlng.lat(),
+            'lng': user_html5_latlng.lng(),
+            'where': encodeURIComponent(where),
+            'when': encodeURIComponent(when),
+            'local': encodeURIComponent(local),
+            'social': encodeURIComponent(social),
+            'popularity': encodeURIComponent(popularity),
+            'price': encodeURIComponent(price),
+            'timeofday': encodeURIComponent(timeofday)
+        };
+    	$.getJSON('venues', request_data, function(data) {
+    	        serverData = data;
+        	    var map_icons = {};
+        	    map_icons.venue = 'images/venue.png';
+                drawPOI(data.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
+        });
+    }
+    else {
+        var map_icons = {};
+        map_icons.venue = 'images/venue.png';
+        drawPOI(serverData.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
+    }
 }
 
 $(document).ready(function(){
