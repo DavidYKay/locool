@@ -6,6 +6,7 @@ sys.path.append('facebook')
 sys.path.append('helper')
 
 import re
+import math
 import logging
 import os
 import urllib
@@ -94,48 +95,47 @@ class VenuesHandler(BaseHandler):
             newBiz['address1'] = business['address1']
             newBiz['address2'] = business['address2']
             newBiz['address3'] = '%s, %s %s' % ( business['city'], business['state'], business['zip'])
-            
-            dollars = self.getDollarSigns(business)
+
+            #scrape html
+            soup = self.getSoup(business)
+            dollars = self.getDollarSigns(soup)
+            touristScore = self.getTouristScore(soup)
+
+            #newBiz['local'] = touristScore
 
             #if (dollars == self.req['price']):
-            if (str(dollars) == str(self.req['price'])):
-                #newBiz['dollars'] = dollars
-                trimmedBiz.append(newBiz)
-            #else:
+            #if (str(dollars) == str(self.req['price'])):
+
+            idealPrice = int(self.req['price'])
+            idealLocal = int(self.req['local_meter'])
+            if (math.fabs(dollars - idealPrice) < 2):
+                #if (math.fabs(touristScore - self.req['local_meter']) < 2):
+                if (math.fabs(touristScore - idealLocal) < 2):
+                    #newBiz['dollars'] = dollars
+                    trimmedBiz.append(newBiz)
+                else:
+                    logging.debug(str(" missed tourist score " + self.req['local_meter']))
+            else:
+                logging.debug(str(" missed price " + self.req['price']))
                 #logging.error(str(self.req['price']) " + "Didn't match " + str(dollars))
         return trimmedBiz
 
-    def getDollarSigns(self, business):
+    def getSoup(self, business):
         url = business['url']
         if (url == None):
             logging.error(business['name'] + " No URL!")
             return 0
         html = REST.get(url)
         soup = BeautifulSoup(''.join(html))
+        return soup
+
+    def getDollarSigns(self, soup):
         match = soup(id="price_tip")[0].contents[0]
-        #match = match.string
         return len(match)
     
-    def getDollarSignsByRE(self, content):
-        p = re.compile(r'<a id="price_tip" .*?>$$</a>')
-        #p = re.compile(r'<a id="price_tip" (title)?\w?(style)?\w?(".*")?>([$]+)</a>')
-        #'<a id="price_tip" .*>([$]+)</a>')
-        m = p.match(content)
-        if (m):
-            total = m.group()
-            dollars = m.group(1)
-            logging.debug("total: " + total)
-            logging.debug("dollars: " + dollars)
-            return dollars.length
-        else:
-            logging.error(business['name'] + " No dollar signs!")
-            logging.debug(business['url'])
-            #logging.debug(content)
-            return 0
-
-    def getTouristScore(self, business):
+    def getTouristScore(self, soup):
         """ Crawl Yelp Page, check review cities. Reverse-geocode, then compare """
-        return 0
+        return 2
     
     def makeFakeListings(self):
         venues = []
