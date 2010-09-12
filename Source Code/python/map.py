@@ -28,7 +28,8 @@ class MapHandler(BaseHandler):
 
     def render(self, user):
         #values = {'API_KEY': self.API_KEY}
-        values = {'API_KEY': 1234}
+        #values = {'API_KEY': 1234}
+        values = {}
         #values['LOGGED_IN'] = True
         #values['USER_NAME'] = "John Smith"
         #values['USER_ID'] = 123456

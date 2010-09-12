@@ -110,7 +110,8 @@ class StaticHandler(BaseHandler):
             self.render(user)
 
     def render(self, user):
-        values = {'API_KEY': self.API_KEY}
+        #values = {'API_KEY': self.API_KEY}
+        values = {}
         if user:
             values['LOGGED_IN'] = True
             values['USER_NAME'] = user['name']
@@ -183,8 +184,8 @@ def main():
         (r"/home", HomeHandler),
         (r"/auth/login", LoginHandler),
         (r"/auth/logout", LogoutHandler),
-        ('/about', StaticHandler), 
         ('/venues', VenuesHandler), 
+        ('/about', StaticHandler), 
         ('/instructions', StaticHandler),
         ('/place', PlaceHandler),
         ('/person', PersonHandler),
