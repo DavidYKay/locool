@@ -139,17 +139,15 @@ class PlaceHandler(BaseHandler):
         self.response.out.write("I am a place")
 
     def getPlace(self, pid):
-        #make call to facebook graph api
-        #GET https://graph.facebook.com/[place page id]/checkins
-        #url = "https://graph.facebook.com/%d/checkins" % pid
-        url = "https://graph.facebook.com/%d/checkins" % pid
-        logging.debug("getPlace: " + url)
-        #data = ""
-        #data = helper.REST.get(url)
-        data = helper.REST.googleGet(url)
-        #parse data
-        place = data
+        user = self.current_user
+        access_token = user.access_token
+        logging.debug(str(access_token))
+        graph = facebook.GraphAPI(access_token)
+        #user = graph.get_object("me")
+        #logging.debug(user)
+        places = graph.search("checkin", "kfc")
         logging.debug("Gotplace")
+        logging.debug(places)
         return place
         
 class PersonHandler(BaseHandler):
@@ -161,7 +159,9 @@ class PersonHandler(BaseHandler):
         self.response.out.write(person)
 
     def getPerson(self, pid):
-        access_token = self.current_user.access_token
+        user = self.current_user
+        access_token = user.access_token
+        logging.debug(str(access_token))
         graph = facebook.GraphAPI(access_token)
         user = graph.get_object("me")
         logging.debug(user)
