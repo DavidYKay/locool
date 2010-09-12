@@ -29,7 +29,6 @@ in client-side code.
 
 import base64
 import cgi
-import Cookie
 import email.utils
 import hashlib
 import hmac
@@ -52,6 +51,7 @@ from BaseHandler import BaseHandler
 from map import MapHandler
 from model import User
 import functions
+from const import Constants
 
 """ Handles primitive home screen
 """

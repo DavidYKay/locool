@@ -3,6 +3,9 @@ import logging
 import hashlib
 import time
 import base64
+import email.utils
+
+import Cookie
 
 from google.appengine.ext import webapp
 
