@@ -48,6 +48,7 @@ import sys
 sys.path.append('.')
 sys.path.append('other')
 from BaseHandler import BaseHandler
+from venues import VenuesHandler
 from map import MapHandler
 from model import User
 import functions
@@ -134,6 +135,7 @@ def main():
         (r"/auth/login", LoginHandler),
         (r"/auth/logout", LogoutHandler),
         ('/about', StaticHandler), 
+        ('/venues', VenuesHandler), 
         ('/instructions', StaticHandler),
     ]))
 

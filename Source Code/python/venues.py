@@ -9,8 +9,8 @@ import logging
 import os
 import urllib
 
-#from BaseHandler import BaseHandler
-from main import BaseHandler
+from BaseHandler import BaseHandler
+# from main import BaseHandler
 from django.utils import simplejson
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -18,7 +18,7 @@ from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
 from time import strftime
 
-class MainHandler(BaseHandler):
+class VenuesHandler(BaseHandler):
     def get(self):
         self.render()
 
@@ -128,12 +128,3 @@ class MainHandler(BaseHandler):
         json_result['venues'] = venues
         my_response = simplejson.dumps(json_result)
         self.response.out.write(my_response)
-
-
-def main():
-    application = webapp.WSGIApplication([('/venues', MainHandler)], debug=True)
-    util.run_wsgi_app(application)
-
-
-if __name__ == '__main__':
-    main()
