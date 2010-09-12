@@ -32,6 +32,94 @@ div.panel {
     margin-top: 0px;
 }
 
+
+
+#controls .slider.ui-widget {
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif; 
+    font-size: 1.1em;
+}
+
+#controls .slider.ui-widget .ui-widget {
+    font-size: 1em;
+}
+
+#controls .slider.ui-widget input, 
+#controls .slider.ui-widget select, 
+#controls .slider.ui-widget textarea, 
+#controls .slider.ui-widget button {
+    font-family: Trebuchet MS, Tahoma, Verdana, Arial, sans-serif; 
+    font-size: 1em;
+}
+
+#controls .slider.ui-widget-content {
+    border: 1px solid #E78F08;
+    background: #ffffff;
+    }
+
+#controls .slider.ui-widget-content a { color: #333333; }
+
+#controls .slider.ui-widget-header { 
+    border: 1px solid #e78f08; 
+    background: #ffe45c; 
+    color: #000000; 
+    font-weight: bold; 
+}
+
+#controls .slider.ui-widget-header a { color: #000000; }
+
+
+
+
+#controls .slider .ui-state-default, 
+#controls .slider .ui-widget-content .ui-state-default, 
+#controls .slider .ui-widget-header .ui-state-default,
+#controls .slider .ui-state-focus, 
+#controls .slider .ui-widget-content .ui-state-focus, 
+#controls .slider .ui-widget-header .ui-state-focus {
+    border: 1px solid #E78F08; 
+    background: #FFCE5C; 
+    font-weight: bold; 
+    color: #FFE45C;
+}
+
+#controls .slider .ui-state-hover, 
+#controls .slider .ui-widget-content .ui-state-hover, 
+#controls .slider .ui-widget-header .ui-state-hover,
+#controls .slider .ui-state-active, 
+#controls .slider .ui-widget-content .ui-state-active, 
+#controls .slider .ui-widget-header .ui-state-active {
+    border: 1px solid #CC7D08; 
+    background: #F2A73E; 
+    font-weight: bold; 
+    color: #FFE45C; 
+}
+
+#controls .slider .ui-state-default a, 
+#controls .slider .ui-state-default a:link, 
+#controls .slider .ui-state-default a:visited { 
+    color: #0a0a0b; 
+    text-decoration: none; 
+}
+
+#controls .slider .ui-state-hover a, 
+#controls .slider .ui-state-hover a:hover {
+    color: #c77405; 
+    text-decoration: none;
+}
+
+#controls .slider .ui-state-active a, 
+#controls .slider .ui-state-active a:link, 
+#controls .slider .ui-state-active a:visited {
+    color: #eb8f00;
+    text-decoration: none;
+}
+
+#controls .slider .ui-widget :active {
+    outline: none;
+}
+
+
+
 .slider-values div {
     position: relative;
     font-size: 8pt;
