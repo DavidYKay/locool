@@ -3,11 +3,13 @@
 import sys
 sys.path.append('other')
 sys.path.append('facebook')
+sys.path.append('helper')
 
 import facebook
 import logging
 import os
 import urllib
+import simplejson
 
 from BaseHandler import BaseHandler
 # from main import BaseHandler
@@ -17,6 +19,9 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
 from time import strftime
+from const import Constants
+#from helper import REST
+import REST
 
 class VenuesHandler(BaseHandler):
     def get(self):
@@ -51,7 +56,32 @@ class VenuesHandler(BaseHandler):
         logging.error('req_price: ' + str(req_price))
         logging.error('req_time_of_day: ' + str(req_time_of_day))
 
+        data = REST.getYelpVenues(req_lat, req_lng)
+        jsonData = simplejson.loads(data)
+        venues = self.prepYelpData(jsonData)
+
         json_result = {}
+        json_result['venues'] = venues
+        my_response = simplejson.dumps(json_result)
+        self.response.out.write(my_response)
+
+    def prepYelpData(self, data):
+        businesses = data['businesses']
+        trimmedBiz = []
+        for business in businesses:
+            newBiz = {}
+            newBiz['name'] = business['name']
+            newBiz['venue_id'] = business['id']
+            newBiz['image_url'] = business['photo_url']
+            newBiz['lat'] = business['latitude']
+            newBiz['lng'] = business['longitude']
+            newBiz['address1'] = business['address1']
+            newBiz['address2'] = business['address2']
+            newBiz['address3'] = business['address3']
+            trimmedBiz.append(newBiz)
+        return trimmedBiz
+
+    def makeFakeListings(self):
         venues = []
         venue = {'lat': 40.73, 
                  'lng': -73.99, 
@@ -125,6 +155,5 @@ class VenuesHandler(BaseHandler):
                    'address1': '524 Broadway', 
                    'address3': 'New York, NY 10012'}
         venues.append(venue)
-        json_result['venues'] = venues
-        my_response = simplejson.dumps(json_result)
-        self.response.out.write(my_response)
+        return venues
+
