@@ -101,23 +101,27 @@ class VenuesHandler(BaseHandler):
             dollars = self.getDollarSigns(soup)
             touristScore = self.getTouristScore(soup)
 
-            #newBiz['local'] = touristScore
+            newBiz['price'] = dollars
+            newBiz['local'] = touristScore
+
+            trimmedBiz.append(newBiz)
 
             #if (dollars == self.req['price']):
             #if (str(dollars) == str(self.req['price'])):
 
-            idealPrice = int(self.req['price'])
-            idealLocal = int(self.req['local_meter'])
-            if (math.fabs(dollars - idealPrice) < 2):
-                #if (math.fabs(touristScore - self.req['local_meter']) < 2):
-                if (math.fabs(touristScore - idealLocal) < 2):
-                    #newBiz['dollars'] = dollars
-                    trimmedBiz.append(newBiz)
-                else:
-                    logging.debug(str(" missed tourist score " + self.req['local_meter']))
-            else:
-                logging.debug(str(" missed price " + self.req['price']))
-                #logging.error(str(self.req['price']) " + "Didn't match " + str(dollars))
+            #idealPrice = int(self.req['price'])
+            #idealLocal = int(self.req['local_meter'])
+            
+            #if (math.fabs(dollars - idealPrice) < 2):
+            #    #if (math.fabs(touristScore - self.req['local_meter']) < 2):
+            #    if (math.fabs(touristScore - idealLocal) < 2):
+            #        #newBiz['dollars'] = dollars
+            #        trimmedBiz.append(newBiz)
+            #    else:
+            #        logging.debug(str(" missed tourist score " + self.req['local_meter']))
+            #else:
+            #    logging.debug(str(" missed price " + self.req['price']))
+            #    #logging.error(str(self.req['price']) " + "Didn't match " + str(dollars))
         return trimmedBiz
 
     def getSoup(self, business):
@@ -135,6 +139,14 @@ class VenuesHandler(BaseHandler):
     
     def getTouristScore(self, soup):
         """ Crawl Yelp Page, check review cities. Reverse-geocode, then compare """
+        """
+        reviewer_info
+        second node
+        """
+        #firstPTag, secondPTag = soup.findAll('p')
+        #reviewerInfoNodes = soup.findAll('reviewer_info')
+        #for i in range(0, len(reviewerInfoNodes) - 1):
+
         return 2
     
     def makeFakeListings(self):
