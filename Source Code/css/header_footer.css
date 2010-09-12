@@ -29,7 +29,7 @@ div.noscript {
 #frame {
     margin: 10px auto 35px auto;
     position: relative;
-    width: 900px;
+    width: 968px;
 }
 
 #header {
@@ -126,4 +126,48 @@ background:transparent url(../images/menu_bar_center_selected.png) repeat-x scro
 	-o-box-shadow:			0px 0px 6px #888;
 	-moz-box-shadow:		0px 0px 6px #888;
 	-webkit-box-shadow: 	0px 0px 6px #888;
+}
+
+a.button {
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:transparent url(../images/button.png) no-repeat scroll 0 0;
+color:white;
+display:block;
+float:left;
+font-size:12pt;
+height:28px;
+padding-top:9px;
+text-align:center;
+vertical-align:middle;
+width:131px;
+line-height: 15pt;
+}
+a.button:hover {
+color:#5A0087;
+text-decoration:none;
+}
+
+.button {
+    -moz-background-clip:border;
+    -moz-background-inline-policy:continuous;
+    -moz-background-origin:padding;
+    background:transparent url(../images/button.png) no-repeat scroll 0 0;
+    color:white;
+    display:block;
+    float:left;
+    font-size:12pt;
+    height:28px;
+    padding-top:9px;
+    text-align:center;
+    vertical-align:middle;
+    width:131px;
+    line-height: 15pt;
+}
+
+.button:hover {
+    color:#5A0087;
+    text-decoration:none;
+    cursor: pointer;
 }

@@ -4,27 +4,104 @@
 	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 {% endblock %}
 {% block css-files %}
+	<link type="text/css" rel="stylesheet" href="lib/jquery-ui/css/custom-theme/jquery-ui-1.8.4.custom.css" />	
+	<link media="screen" rel="stylesheet" href="lib/colorbox/colorbox.css" />
     <link type="text/css" rel="stylesheet" href="css/map.css">
 {% endblock %}
 {% block js-files %}
+	<script type="text/javascript" language="javascript" src="lib/colorbox/jquery.colorbox-min.js"></script>
+	<script type="text/javascript" language="javascript" src="lib/jquery-ui/js/jquery-ui-1.8.4.custom.min.js"></script>
 	<script type="text/javascript" language="javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
     <script type="text/javascript" language="javascript" src="js/map.js"></script>
 {% endblock %}
 
 {% block map-selected %} current{% endblock %}
 {% block content %}
-	<div id="the-map"></div>
-    <div style="display: none;" id="info-window-html-template">
-        <div id="map-info-window">
+	<div class="panel" id="controls">
+		<div class="control-label first">Where</div>
+		<input type="text" id="destination"></input>
+
+		<div class="control-label">When</div>
+		<div id="calendar"></div>
+
+		<div class="control-label">Local meter</div>
+		<div class="slider" id="slider-local"></div>
+		<div class="slider-values">
+			<div class="left">locals</div>
+			<div class="right">touristy</div>
+		    <div style="clear: both;"></div>
+		</div>
+
+		<div class="control-label">Friendprint</div>
+		<div class="slider" id="slider-social"></div>
+		<div class="slider-values">
+			<div class="left">my friends</div>
+			<div class="right">new people</div>
+		    <div style="clear: both;"></div>
+		</div>
+
+		<div class="control-label">Popularity</div>
+		<div class="slider" id="slider-popularity"></div>
+		<div class="slider-values">
+			<div class="left">empty</div>
+			<div class="right">crowded</div>
+		    <div style="clear: both;"></div>
+		</div>
+
+		<div class="control-label">Price</div>
+		<div class="slider" id="slider-price"></div>
+		<div class="slider-values">
+			<div class="left">cheap</div>
+			<div class="right">expensive</div>
+		    <div style="clear: both;"></div>
+		</div>
+
+		<div class="control-label">Time of day</div>
+		<div class="slider" id="slider-timeofday"></div>
+		<div class="slider-values">
+			<div class="left">midnight</div>
+			<div class="right">midnight</div>
+		    <div style="clear: both;"></div>
+		</div>
+	</div>
+	<div class="panel" id="the-map"></div>
+	<div class="panel" id="venues-list">
+		<table id="venues-table">
+			<thead>
+				<tr>
+					<th>Venue</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td id="place">
+						<div id="venue-details">
+							<div id="venue-name"></div>
+							<div id="address_1" class="address first"></div>
+							<div id="address_2" class="address"></div>
+							<div id="address_3" class="address"></div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+    <div style="clear: both;"></div>
+	<div style="display: none;">
+		<div class="popup" id="venue-details-container">
             <div id="title"></div>
             <div class="address first" id="address1"></div>
             <div class="address" id="address2"></div>
             <div class="address" id="address3"></div>
             <div id="image"></div>
-            <div id="add-to-favorites">
-                <div id="add-favorite-icon"></div>
-                <div id="add-favorite-text">add this venue to my favorites</div>
-            </div>
-        </div>
-    </div>
+            <div style="clear: both;"></div>
+	        <div id="add-to-favorites">
+	            <div id="add-favorite-icon"></div>
+	            <div id="add-favorite-text">add this venue to my favorites</div>
+		        <div style="clear: both;"></div>
+	        </div>
+	    	<div class="button dialog-button close first">Close</div>
+	        <div style="clear: both;"></div>
+		</div>
+	</div>
 {% endblock %}
