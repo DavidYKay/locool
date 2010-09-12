@@ -426,10 +426,16 @@ $(document).ready(function(){
 
     var sliderNames = ['local', 'social', 'popularity', 'price', 'timeofday'];
     $.each(sliderNames, function(i, data) {
+        var min_val = 0;
+        var max_val = 7;
+        if (data == 'price') {
+            min_val = 1;
+            max_val = 5;
+        }
         $("#slider-" + data).slider({
             range: false, 
-            min: 0, 
-            max: 7, 
+            min: min_val, 
+            max: max_val, 
             value: 3, 
             slide: function(event, ui) {
                 updateSearchResults(data, ui.value);
