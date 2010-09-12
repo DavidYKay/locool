@@ -50,8 +50,9 @@ sys.path.append('other')
 from BaseHandler import BaseHandler
 from map import MapHandler
 from model import User
-import functions
 from const import Constants
+import helper.REST
+import functions
 
 """ Handles primitive home screen
 """
@@ -123,6 +124,45 @@ class StaticHandler(BaseHandler):
         my_response = template.render(''.join(['../html', request_url, '.htm']), values)
         self.response.out.write(my_response)
 
+class PlaceHandler(BaseHandler):
+    def get(self):
+        logging.debug("placeHandler")
+        place = ""
+        #place = self.getPlace(1)
+        place = self.getPlace(self.current_user.id)
+        self.render(place)
+
+    def render(self, place):
+        #final = "This is my place: " + place
+        #self.response.out.write(final)
+        self.response.out.write("I am a place")
+
+    def getPlace(self, pid):
+        #make call to facebook graph api
+        #GET https://graph.facebook.com/[place page id]/checkins
+        #url = "https://graph.facebook.com/%d/checkins" % pid
+        url = "https://graph.facebook.com/%d/checkins" % pid
+        logging.debug("getPlace: " + url)
+        #data = helper.REST.get(url)
+        data = ""
+        #parse data
+        place = data
+        logging.debug("Gotplace")
+        return place
+        
+class PersonHandler(BaseHandler):
+    def get(self):
+        person = self.getPerson(1)
+        self.render(person)
+
+    def render(self, person):
+        self.response.out.write(person)
+
+    def getPerson(self, pid):
+        return "I am a person"
+        #make call to facebook graph api
+        #GET https://graph.facebook.com/[person page id]/checkins
+
 """ Entry point to the entire web app
 """
 def main():
@@ -135,6 +175,8 @@ def main():
         (r"/auth/logout", LogoutHandler),
         ('/about', StaticHandler), 
         ('/instructions', StaticHandler),
+        ('/place', PlaceHandler),
+        ('/person', PersonHandler),
     ]))
 
 if __name__ == "__main__":

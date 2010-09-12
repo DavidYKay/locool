@@ -18,7 +18,9 @@ handlers:
 - url: /xd_receiver.html
   static_files: html/xd_receiver.html
   upload: html/xd_receiver.html
+#- url: /places/(.*)
+#  script: python/places.py
+#- url: /people/(.*)
+#  script: python/people.py
 - url: /.*
   script: python/main.py
-#- url: /login
-#  script: python/login.py

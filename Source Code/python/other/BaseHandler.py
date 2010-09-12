@@ -4,6 +4,8 @@ import pprint
 
 from google.appengine.ext import webapp
 from model import User
+import sys
+sys.path.append('../')
 import functions
 
 """ Superclass to all event handlers
