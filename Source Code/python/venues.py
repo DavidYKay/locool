@@ -41,6 +41,16 @@ class VenuesHandler(BaseHandler):
         self.req['popularity'] = self.request.get("popularity", default_value='3')
         self.req['price'] = self.request.get("price", default_value='3')
         self.req['time_of_day'] = self.request.get("timeofday", default_value='3')
+
+        #req_lat = self.request.get("lat", default_value='40.73')
+        #req_lng = self.request.get("lng", default_value='-73.99')
+        #req_where = self.request.get("where")
+        #req_when = self.request.get("when", default_value=strftime('%m/%d/%Y'))
+        #req_local_meter = self.request.get("local", default_value='3')
+        #req_friend_print = self.request.get("social", default_value='3')
+        #req_popularity = self.request.get("popularity", default_value='3')
+        #req_price = self.request.get("price", default_value='3')
+        #req_time_of_day = self.request.get("timeofday", default_value='3')
         
         self.req['where'] = urllib.unquote(self.req['where']);
         self.req['when'] = urllib.unquote(self.req['when']);
@@ -60,7 +70,9 @@ class VenuesHandler(BaseHandler):
         #logging.error('req_price: ' + str(req_price))
         #logging.error('req_time_of_day: ' + str(req_time_of_day))
 
-        data = REST.getYelpVenues(self.req['lat'], self.req['lng'])
+        #data = REST.getYelpVenues(self.req['lat'], self.req['lng'])
+        data = REST.getYelpVenues(self.req['lat'], self.req['lng'], self.req['where'])
+        #data = REST.getYelpVenues(req_lat, req_lng, req_where)
         jsonData = simplejson.loads(data)
         venues = self.prepYelpData(jsonData)
 
