@@ -1,38 +1,157 @@
-#map-info-window {
+div.panel {
+    position: relative;
+    float: left;
+    height: 550px;
+}
+
+#controls {
+    border-right: 1px solid lightGray;
+    padding-right: 20px;
+    padding-left: 15px;
+    padding-bottom: 15px;
+    padding-top: 15px;
+    margin-right: 5px;
+    width: 160px;
+    height: 520px;
+}
+
+#controls #destination {
+    border: 1px solid gray;
+    width: 100%;
+    height: 1.7em;
+}
+
+.control-label { 
+    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+    font-size: 10pt;
+    margin-top: 13px;
+    margin-bottom: 4px;
+}
+
+.control-label.first { 
+    margin-top: 0px;
+}
+
+.slider-values div {
+    position: relative;
+    font-size: 8pt;
+    color: gray;
+    font-family: sans-serif;
+    margin-top: 2px;
+}
+
+.slider-values .left {
+    float: left;
+}
+
+.slider-values .right {
+    float: right;
+}
+
+#the-map {
+    width: 560px;
+}
+
+#venues-list {
+    border: 1px solid lightGray;
+    padding-left: 15px;
+    margin-left: 5px;
+    width: 174px;
+    overflow: auto;
+}
+
+table {
+	margin-left: -10px;
+	font-size: 10pt;
+	line-height: 10pt;
+}
+
+tbody tr {
+	border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr.last {
+	border-bottom: 0px;
+}
+
+th {
+	text-align: left;
+	border-bottom: 2px solid dimGray;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+td {
+    font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+	text-align: left;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 10px;
+	padding-right: 10px;
+	vertical-align: top;
+}
+
+td > div {
+	color: #404040;
+}
+
+#venue-details {
+    cursor: none;
+}
+
+#venue-details:hover {
+    cursor: pointer;
+}
+
+td div.address {
+    font-size: 7pt;
+}
+
+td div.address.first {
+    margin-top: 2px;
+}
+
+td div#venue-name {
+	color: #318719;
+}
+
+#venue-details-container {
 	font-family: 'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
     padding: 10px;
     width: 300px;
 }
 
-#map-info-window #title {
-	font-size: 11pt;
+#venue-details-container #title {
+	font-size: 14pt;
     color: #4E9B3C;
 }
 
-#map-info-window .address {
+#venue-details-container .address {
     font-size: 7pt;
     color: gray;
 }
 
-#map-info-window .address.first {
+#venue-details-container .address.first {
     margin-top: 5px;
 }
 
-#map-info-window #image {
-    margin-top: 15px;
+#venue-details-container #image {
+    margin-top: 30px;
     color: gray;
     font-size: 9pt;
 }
 
-#map-info-window #add-to-favorites {
+#venue-details-container #add-to-favorites {
     margin-top: 15px;
 }
 
-#map-info-window #add-to-favorites:hover {
+#venue-details-container #add-to-favorites:hover {
     cursor: pointer;
 }
 
-#map-info-window #add-favorite-icon {
+#venue-details-container #add-favorite-icon {
     position: relative;
     float: left;
     background: url(../images/favorite_venue.png) no-repeat scroll 0 0;
@@ -40,11 +159,24 @@
     height: 16px;
 }
 
-#map-info-window #add-favorite-text {
+#venue-details-container #add-favorite-text {
     position: relative;
     float: left;
     font-size: 7pt;
     color: orange;
     margin-left: 8px;
     line-height: 12pt;
+}
+
+.button.dialog-button {
+    position: relative;
+    left: 20px;
+    margin-top: 40px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100pt;
+}
+
+.button.dialog-button.first {
+    left: 0px;
 }
