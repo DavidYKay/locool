@@ -159,7 +159,8 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
 
 	if (has_venues) {
 		if (user_latlng != null) {
-			min_max_lat_lng = adjustMinMax(min_max_lat_lng, user_latlng.lat(), user_latlng.lng());
+		    // the next line should be called only if the user is near the other listings, so it's commented out for now
+            // min_max_lat_lng = adjustMinMax(min_max_lat_lng, user_latlng.lat(), user_latlng.lng());
 			poiMarker = new google.maps.Marker({
 				position: user_latlng,
 				map: the_map,

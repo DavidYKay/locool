@@ -30,7 +30,7 @@ class VenuesHandler(BaseHandler):
     def render(self):
         req_lat = self.request.get("lat", default_value='40.73')
         req_lng = self.request.get("lng", default_value='-73.99')
-        req_where = self.request.get("where", default_value='New York, NY')
+        req_where = self.request.get("where")
         req_when = self.request.get("when", default_value=strftime('%m/%d/%Y'))
         req_local_meter = self.request.get("local", default_value='3')
         req_friend_print = self.request.get("social", default_value='3')
@@ -56,7 +56,7 @@ class VenuesHandler(BaseHandler):
         logging.error('req_price: ' + str(req_price))
         logging.error('req_time_of_day: ' + str(req_time_of_day))
 
-        data = REST.getYelpVenues(req_lat, req_lng)
+        data = REST.getYelpVenues(req_lat, req_lng, req_where)
         jsonData = simplejson.loads(data)
         venues = self.prepYelpData(jsonData)
 

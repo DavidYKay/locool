@@ -31,7 +31,7 @@ def postWithArgs(url, args):
                             headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
 
-def getYelpVenues(lat, lng, term = None):
+def getYelpVenues(lat, lng, place, term = None):
     logging.debug("getYelpVenues")
     #http://api.yelp.com/business_review_search?term=yelp&tl_lat=37.9&tl_long=-122.5&br_lat=37.788022&br_long=-122.399797&limit=3&ywsid=XXXXXXXXXXXXXXXXXX
     
@@ -41,19 +41,24 @@ def getYelpVenues(lat, lng, term = None):
     url = 'http://api.yelp.com/business_review_search/'
     args = {
         'limit' : Constants.YELP_LIMIT,
-        'lat' : lat,
-        'long' : lng,
         'radius' : Constants.YELP_RADIUS,
         'category' : Constants.YELP_CATEGORIES,
         'ywsid' : Constants.YELP_YWSID,
     }
+    if place == None or str(place).strip() == '':
+        logging.error('PLACE1: ' + str(place))
+        args['lat'] = lat
+        args['long'] = lng
+    else:
+        logging.error('PLACE2: \'' + str(place) + '\'')
+        args['location'] = place
     #http://api.yelp.com/business_review_search?lat=37.788022&long=-122.399797&radius=10&limit=5&ywsid=QvkwilO6TqLRnMAe2qxjkQ
 
     if (term):
         args['term'] = term
     #data = getWithArgs(url, args)
     url += '?' + urllib.urlencode(args)
-    logging.debug(url)
+    logging.debug('REQUESTING YELP URL: ' + url)
     data = get(url)
     #logging.debug(data)
     return data
