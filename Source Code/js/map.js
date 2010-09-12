@@ -97,7 +97,7 @@ function cleanUp() {
 	
 	var row = "#venues-table tbody tr:last";
 
-    var template_row_html = '<tr class="last">' + $(row).html() + '</tr>';
+    var template_row_html = '<tr class="last" style="display: none;">' + $(row).html() + '</tr>';
     $("#venues-table tbody").html('');
     $("#venues-table tbody").append(template_row_html);
     
