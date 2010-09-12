@@ -51,8 +51,10 @@ from BaseHandler import BaseHandler
 from venues import VenuesHandler
 from map import MapHandler
 from model import User
-import functions
 from const import Constants
+from facebook import facebook
+import helper.REST
+import functions
 
 """ Handles primitive home screen
 """
@@ -108,7 +110,8 @@ class StaticHandler(BaseHandler):
             self.render(user)
 
     def render(self, user):
-        values = {'API_KEY': self.API_KEY}
+        #values = {'API_KEY': self.API_KEY}
+        values = {}
         if user:
             values['LOGGED_IN'] = True
             values['USER_NAME'] = user['name']
@@ -124,6 +127,53 @@ class StaticHandler(BaseHandler):
         my_response = template.render(''.join(['../html', request_url, '.htm']), values)
         self.response.out.write(my_response)
 
+class PlaceHandler(BaseHandler):
+    def get(self):
+        logging.debug("placeHandler")
+        place = ""
+        #place = self.getPlace(1)
+        place = self.getPlace(self.current_user.id)
+        self.render(place)
+
+    def render(self, place):
+        #final = "This is my place: " + place
+        #self.response.out.write(final)
+        self.response.out.write("I am a place")
+
+    def getPlace(self, pid):
+        user = self.current_user
+        access_token = user.access_token
+        logging.debug(str(access_token))
+        graph = facebook.GraphAPI(access_token)
+        #user = graph.get_object("me")
+        #logging.debug(user)
+        places = graph.search("checkin", "kfc")
+        logging.debug("Gotplace")
+        logging.debug(places)
+        return place
+        
+class PersonHandler(BaseHandler):
+    def get(self):
+        person = self.getPerson(1332960041)
+        self.render(person)
+
+    def render(self, person):
+        self.response.out.write(person)
+
+    def getPerson(self, pid):
+        user = self.current_user
+        access_token = user.access_token
+        logging.debug(str(access_token))
+        graph = facebook.GraphAPI(access_token)
+        user = graph.get_object("me")
+        logging.debug(user)
+        #url = "https://graph.facebook.com/%d/checkins" % pid
+        #data = helper.REST.googleGet(url)
+        #logging.debug(data)
+        return "I am a person"
+        #make call to facebook graph api
+        #GET https://graph.facebook.com/[person page id]/checkins
+
 """ Entry point to the entire web app
 """
 def main():
@@ -134,9 +184,11 @@ def main():
         (r"/home", HomeHandler),
         (r"/auth/login", LoginHandler),
         (r"/auth/logout", LogoutHandler),
-        ('/about', StaticHandler), 
         ('/venues', VenuesHandler), 
+        ('/about', StaticHandler), 
         ('/instructions', StaticHandler),
+        ('/place', PlaceHandler),
+        ('/person', PersonHandler),
     ]))
 
 if __name__ == "__main__":
