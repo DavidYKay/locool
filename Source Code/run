@@ -1,0 +1,1 @@
+find python -name "*.py" -exec pychecker {} \;

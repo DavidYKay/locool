@@ -1,0 +1,3 @@
+class Constants:
+    FACEBOOK_APP_ID     = '82d03be712b2773aa7cc3774195e125e'
+    FACEBOOK_APP_SECRET = '06aa97dd6904eba7781307922abd5aff'

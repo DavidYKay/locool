@@ -9,7 +9,8 @@ import logging
 import os
 import urllib
 
-from BaseRequestHandler import BaseRequestHandler
+#from BaseHandler import BaseHandler
+from main import BaseHandler
 from django.utils import simplejson
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -17,7 +18,7 @@ from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
 from time import strftime
 
-class MainHandler(BaseRequestHandler):
+class MainHandler(BaseHandler):
     def get(self):
         self.render()
 
