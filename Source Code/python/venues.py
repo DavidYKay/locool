@@ -5,11 +5,14 @@ sys.path.append('other')
 sys.path.append('facebook')
 sys.path.append('helper')
 
-import facebook
+import re
 import logging
 import os
 import urllib
 import simplejson
+import facebook
+
+from BeautifulSoup import BeautifulSoup
 
 from BaseHandler import BaseHandler
 # from main import BaseHandler
@@ -28,35 +31,36 @@ class VenuesHandler(BaseHandler):
         self.render()
 
     def render(self):
-        req_lat = self.request.get("lat", default_value='40.73')
-        req_lng = self.request.get("lng", default_value='-73.99')
-        req_where = self.request.get("where", default_value='New York, NY')
-        req_when = self.request.get("when", default_value=strftime('%m/%d/%Y'))
-        req_local_meter = self.request.get("local", default_value='3')
-        req_friend_print = self.request.get("social", default_value='3')
-        req_popularity = self.request.get("popularity", default_value='3')
-        req_price = self.request.get("price", default_value='3')
-        req_time_of_day = self.request.get("timeofday", default_value='3')
+        self.req = {}
+        self.req['lat'] = self.request.get("lat", default_value='40.73')
+        self.req['lng'] = self.request.get("lng", default_value='-73.99')
+        self.req['where'] = self.request.get("where", default_value='New York, NY')
+        self.req['when'] = self.request.get("when", default_value=strftime('%m/%d/%Y'))
+        self.req['local_meter'] = self.request.get("local", default_value='3')
+        self.req['friend_print'] = self.request.get("social", default_value='3')
+        self.req['popularity'] = self.request.get("popularity", default_value='3')
+        self.req['price'] = self.request.get("price", default_value='3')
+        self.req['time_of_day'] = self.request.get("timeofday", default_value='3')
         
-        req_where = urllib.unquote(req_where);
-        req_when = urllib.unquote(req_when);
-        req_local_meter = urllib.unquote(req_local_meter);
-        req_friend_print = urllib.unquote(req_friend_print);
-        req_popularity = urllib.unquote(req_popularity);
-        req_price = urllib.unquote(req_price);
-        req_time_of_day = urllib.unquote(req_time_of_day);
+        self.req['where'] = urllib.unquote(self.req['where']);
+        self.req['when'] = urllib.unquote(self.req['when']);
+        self.req['local_meter'] = urllib.unquote(self.req['local_meter']);
+        self.req['friend_print'] = urllib.unquote(self.req['friend_print']);
+        self.req['popularity'] = urllib.unquote(self.req['popularity']);
+        self.req['price'] = urllib.unquote(self.req['price']);
+        self.req['time_of_day'] = urllib.unquote(self.req['time_of_day']);
         
-        logging.error('req_lat: ' + str(req_lat))
-        logging.error('req_lng: ' + str(req_lng))
-        logging.error('req_where: ' + str(req_where))
-        logging.error('req_when: ' + str(req_when))
-        logging.error('req_local_meter: ' + str(req_local_meter))
-        logging.error('req_friend_print: ' + str(req_friend_print))
-        logging.error('req_popularity: ' + str(req_popularity))
-        logging.error('req_price: ' + str(req_price))
-        logging.error('req_time_of_day: ' + str(req_time_of_day))
+        #logging.error('req_lat: ' + str(req['lat']))
+        #logging.error('req_lng: ' + str(req['lng']))
+        #logging.error('req_where: ' + str(req['where']))
+        #logging.error('req_when: ' + str(req_when))
+        #logging.error('req_local_meter: ' + str(req_local_meter))
+        #logging.error('req_friend_print: ' + str(req_friend_print))
+        #logging.error('req_popularity: ' + str(req_popularity))
+        #logging.error('req_price: ' + str(req_price))
+        #logging.error('req_time_of_day: ' + str(req_time_of_day))
 
-        data = REST.getYelpVenues(req_lat, req_lng)
+        data = REST.getYelpVenues(self.req['lat'], self.req['lng'])
         jsonData = simplejson.loads(data)
         venues = self.prepYelpData(jsonData)
 
@@ -78,9 +82,49 @@ class VenuesHandler(BaseHandler):
             newBiz['address1'] = business['address1']
             newBiz['address2'] = business['address2']
             newBiz['address3'] = '%s, %s %s' % ( business['city'], business['state'], business['zip'])
-            trimmedBiz.append(newBiz)
+            
+            dollars = self.getDollarSigns(business)
+
+            #if (dollars == self.req['price']):
+            if (str(dollars) == str(self.req['price'])):
+                #newBiz['dollars'] = dollars
+                trimmedBiz.append(newBiz)
+            #else:
+                #logging.error(str(self.req['price']) " + "Didn't match " + str(dollars))
         return trimmedBiz
 
+    def getDollarSigns(self, business):
+        url = business['url']
+        if (url == None):
+            logging.error(business['name'] + " No URL!")
+            return 0
+        html = REST.get(url)
+        soup = BeautifulSoup(''.join(html))
+        match = soup(id="price_tip")[0].contents[0]
+        #match = match.string
+        return len(match)
+    
+    def getDollarSignsByRE(self, content):
+        p = re.compile(r'<a id="price_tip" .*?>$$</a>')
+        #p = re.compile(r'<a id="price_tip" (title)?\w?(style)?\w?(".*")?>([$]+)</a>')
+        #'<a id="price_tip" .*>([$]+)</a>')
+        m = p.match(content)
+        if (m):
+            total = m.group()
+            dollars = m.group(1)
+            logging.debug("total: " + total)
+            logging.debug("dollars: " + dollars)
+            return dollars.length
+        else:
+            logging.error(business['name'] + " No dollar signs!")
+            logging.debug(business['url'])
+            #logging.debug(content)
+            return 0
+
+    def getTouristScore(self, business):
+        """ Crawl Yelp Page, check review cities. Reverse-geocode, then compare """
+        return 0
+    
     def makeFakeListings(self):
         venues = []
         venue = {'lat': 40.73, 
