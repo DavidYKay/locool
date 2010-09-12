@@ -40,6 +40,7 @@ class MapHandler(BaseHandler):
             values['USER_ID'] = user.id
             #values['USER_NAME'] = "IT WORKED"
             #values['USER_ID'] = 1234
+            values['LOGIN_LINK'] = self.createLogoutUrl(self.request.uri)
         else:
             values['LOGGED_IN'] = False
             #values['LOGIN_LINK'] = self.createLoginUrl(self.request.uri)

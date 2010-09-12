@@ -28,7 +28,10 @@
                 {% if LOGGED_IN %}
 					<div id="welcome-message">
                         <span class="first">Hi, {{ USER_NAME }}!</span>
-						<span><a href="#" onclick="FB.Connect.logoutAndRedirect('.'); return false;">Log out</a></span>
+                        <!--
+                        <span><a href="#" onclick="FB.Connect.logoutAndRedirect('.'); return false;">Log out</a></span>
+                        -->
+	                    <a href="{{ LOGIN_LINK }}">Log Out</a>
                     </div>
                 {% else %}
 					<div id="welcome-message">

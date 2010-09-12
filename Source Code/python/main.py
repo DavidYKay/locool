@@ -51,6 +51,7 @@ sys.path.append('other')
 from BaseHandler import BaseHandler
 from map import MapHandler
 from model import User
+import functions
 
 """ Handles primitive home screen
 """
@@ -65,9 +66,9 @@ class HomeHandler(BaseHandler):
 class LoginHandler(BaseHandler):
     def get(self):
         verification_code = self.request.get("code")
-        args = dict(client_id=BaseHandler.FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
+        args = dict(client_id=Constants.FACEBOOK_APP_ID, redirect_uri=self.request.path_url)
         if self.request.get("code"):
-            args["client_secret"] = BaseHandler.FACEBOOK_APP_SECRET
+            args["client_secret"] = Constants.FACEBOOK_APP_SECRET
             args["code"] = self.request.get("code")
             response = cgi.parse_qs(urllib.urlopen(
                 "https://graph.facebook.com/oauth/access_token?" +
@@ -83,7 +84,7 @@ class LoginHandler(BaseHandler):
                         name=profile["name"], access_token=access_token,
                         profile_url=profile["link"])
             user.put()
-            self.set_cookie(self.response, "fb_user", str(profile["id"]),
+            functions.set_cookie(self.response, "fb_user", str(profile["id"]),
                        expires=time.time() + 30 * 86400)
             self.redirect("/")
         else:
@@ -94,9 +95,8 @@ class LoginHandler(BaseHandler):
 
 class LogoutHandler(BaseHandler):
     def get(self):
-        self.set_cookie(self.response, "fb_user", "", expires=time.time() - 86400)
+        functions.set_cookie(self.response, "fb_user", "", expires=time.time() - 86400)
         self.redirect("/")
-
 
 """ Handles all of the Static Content Pages
 """
