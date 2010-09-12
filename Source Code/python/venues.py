@@ -77,7 +77,7 @@ class VenuesHandler(BaseHandler):
             newBiz['lng'] = business['longitude']
             newBiz['address1'] = business['address1']
             newBiz['address2'] = business['address2']
-            newBiz['address3'] = business['address3']
+            newBiz['address3'] = '%s, %s %s' % ( business['city'], business['state'], business['zip'])
             trimmedBiz.append(newBiz)
         return trimmedBiz
 
