@@ -51,6 +51,7 @@ from BaseHandler import BaseHandler
 from map import MapHandler
 from model import User
 from const import Constants
+from facebook import facebook
 import helper.REST
 import functions
 
@@ -143,8 +144,9 @@ class PlaceHandler(BaseHandler):
         #url = "https://graph.facebook.com/%d/checkins" % pid
         url = "https://graph.facebook.com/%d/checkins" % pid
         logging.debug("getPlace: " + url)
+        #data = ""
         #data = helper.REST.get(url)
-        data = ""
+        data = helper.REST.googleGet(url)
         #parse data
         place = data
         logging.debug("Gotplace")
@@ -152,13 +154,20 @@ class PlaceHandler(BaseHandler):
         
 class PersonHandler(BaseHandler):
     def get(self):
-        person = self.getPerson(1)
+        person = self.getPerson(1332960041)
         self.render(person)
 
     def render(self, person):
         self.response.out.write(person)
 
     def getPerson(self, pid):
+        access_token = self.current_user.access_token
+        graph = facebook.GraphAPI(access_token)
+        user = graph.get_object("me")
+        logging.debug(user)
+        #url = "https://graph.facebook.com/%d/checkins" % pid
+        #data = helper.REST.googleGet(url)
+        #logging.debug(data)
         return "I am a person"
         #make call to facebook graph api
         #GET https://graph.facebook.com/[person page id]/checkins

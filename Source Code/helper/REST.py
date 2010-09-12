@@ -1,5 +1,15 @@
 import urllib2
 import logging
+from google.appengine.api import urlfetch
+
+def googleGet(url):
+    url = "http://www.google.com/"
+    result = urlfetch.fetch(url)
+    if result.status_code == 200:
+        #doSomethingWithResult(result.content)
+        return result.content
+    else:
+        return None
 
 def get(url):
     logging.debug("Began get: " + url)
