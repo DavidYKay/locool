@@ -37,7 +37,7 @@ def getYelpVenues(lat, lng, place, term = None):
     
     #http://api.yelp.com/business_review_search
 
-#http://api.yelp.com/business_review_search?term=yelp&lat=37.788022&long=-122.399797&radius=10&limit=5&ywsid=XXXXXXXXXXXXXXXXXX
+    #http://api.yelp.com/business_review_search?term=yelp&lat=37.788022&long=-122.399797&radius=10&limit=5&ywsid=XXXXXXXXXXXXXXXXXX
     url = 'http://api.yelp.com/business_review_search/'
     args = {
         'limit' : Constants.YELP_LIMIT,
@@ -46,11 +46,9 @@ def getYelpVenues(lat, lng, place, term = None):
         'ywsid' : Constants.YELP_YWSID,
     }
     if place == None or str(place).strip() == '':
-        logging.error('PLACE1: ' + str(place))
         args['lat'] = lat
         args['long'] = lng
     else:
-        logging.error('PLACE2: \'' + str(place) + '\'')
         args['location'] = place
     #http://api.yelp.com/business_review_search?lat=37.788022&long=-122.399797&radius=10&limit=5&ywsid=QvkwilO6TqLRnMAe2qxjkQ
 

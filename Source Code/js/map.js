@@ -2,6 +2,7 @@ var user_html5_latlng;
 var user_zip_code_latlng;
 var venues_map;
 var venue_markers = new Object();
+var serverData = new Object();
 
 function renderPlaces() {
 	getUserLocation(false, function(user_latlng, ip_geolocation) {
@@ -22,7 +23,8 @@ function renderPlaces() {
                         'lng': user_latlng.lng()
                     };
                 	$.getJSON('venues', request_data, function(data) {
-                            drawMapMarkers(data.venues, user_latlng, venues_map, false, map_icons, venue_markers);
+            	        serverData = data;
+                        drawMapMarkers(data.venues, user_latlng, venues_map, false, map_icons, venue_markers);
                     });
 				});
 			}, 
@@ -106,55 +108,126 @@ function cleanUp() {
 function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marker_list) {
     cleanUp();
 
+    // ---------------------------
+    var where;
+    var when;
+    var local;
+    var social;
+    var popularity;
+    var price;
+    var timeofday;
+    
+    if (name == 'where') {
+        where = value;
+    }
+    else {
+        where = $("#controls #destination").val();
+    }
+    
+    if (name == 'when') {
+        when = value;
+    }
+    else {
+        when = $("#controls #calendar").datepicker('getDate');
+    }
+
+    if (name == 'local') {
+        local = value;
+    }
+    else {
+        local = $("#controls #slider-local").slider('value');
+    }
+    
+    if (name == 'social') {
+        social = value;
+    }
+    else {
+        social = $("#controls #slider-social").slider('value');
+    }
+    
+    if (name == 'popularity') {
+        popularity = value;
+    }
+    else {
+        popularity = $("#controls #slider-popularity").slider('value');
+    }
+    
+    if (name == 'price') {
+        price = value;
+    }
+    else {
+        price = $("#controls #slider-price").slider('value');
+    }
+    
+    if (name == 'timeofday') {
+        timeofday = value;
+    }
+    else {
+        timeofday = $("#controls #slider-timeofday").slider('value');
+    }
+    
+    local = parseInt(local);
+    price = parseInt(price);
+    
+    // ---------------------------
+
 	var min_max_lat_lng = getNewMinMaxLatLng();
 	var has_venues = false;
 
 	$.each(data, function(i, item) {
-		has_venues = true;
+	    console.log('ITEM LOCAL SCORE: ' + item.local);
+	    console.log('ITEM PRICE SCORE: ' + item.price);
+	    if (
+	        item.local >= local - 1 && item.local <= local + 1 
+	        &&
+	        item.price >= price - 0 && item.price <= price + 0
+        ) {
+    		has_venues = true;
 		
-		renderListItem(item);
+    		renderListItem(item);
 		
-		item_lat = parseFloat(item.lat);
-		item_lng = parseFloat(item.lng);
-		var my_latlng = new google.maps.LatLng(item_lat, item_lng);
-		var poiMarker = new google.maps.Marker({
-			position: my_latlng,
-			map: the_map,
-			title: item.listing_name + ': ' + item.offer_title,
-			icon: marker_icons['venue']
-		});
+    		item_lat = parseFloat(item.lat);
+    		item_lng = parseFloat(item.lng);
+    		var my_latlng = new google.maps.LatLng(item_lat, item_lng);
+    		var poiMarker = new google.maps.Marker({
+    			position: my_latlng,
+    			map: the_map,
+    			title: item.name + ': ' + item.offer_title,
+    			icon: marker_icons['venue']
+    		});
 
-        google.maps.event.addListener(poiMarker, 'click', function() {
-            if (item.image_url) {
-                var venue_pic = item.image_url;
-            }
-            else {
-                var venue_pic = 'images/venue_placeholder.png';
-            }
+            google.maps.event.addListener(poiMarker, 'click', function() {
+                if (item.image_url) {
+                    var venue_pic = item.image_url;
+                }
+                else {
+                    var venue_pic = 'images/venue_placeholder.png';
+                }
 
-            var venue_id = item.venue_id;
-            var name = item.name;
-            var address_1 = item.address1;
-            var address_2 = item.address2;
-            if (address_2 == null) {
-                address_2 = '';
-            }
-            var address_3 = item.address3;
-            var venue_lat = item.latitude;
-            var venue_lng = item.longitude;
+                var venue_id = item.venue_id;
+                var name = item.name;
+                var address_1 = item.address1;
+                var address_2 = item.address2;
+                if (address_2 == null) {
+                    address_2 = '';
+                }
+                var address_3 = item.address3;
+                var venue_lat = item.latitude;
+                var venue_lng = item.longitude;
             
-            $("#venue-details-container #title").html(name);
-            $("#venue-details-container #address1").html(address_1);
-            $("#venue-details-container #address2").html(address_2);
-            $("#venue-details-container #address3").html(address_3);
-            $("#venue-details-container #image").html('<img src="' + venue_pic + '"/>');
-            var content_html = $("#info-window-html-template").html();
+                $("#venue-details-container #title").html(name);
+                $("#venue-details-container #address1").html(address_1);
+                $("#venue-details-container #address2").html(address_2);
+                $("#venue-details-container #address3").html(address_3);
+                $("#venue-details-container #image").html('<img src="' + venue_pic + '"/>');
+                var content_html = $("#info-window-html-template").html();
 
-            showPopUp(venue_id, name, address_1, address_2, address_3, venue_lat, venue_lng, venue_pic);
+                showPopUp(venue_id, name, address_1, address_2, address_3, venue_lat, venue_lng, venue_pic);
             
-        });
-		marker_list[item.venue_id] = poiMarker;
-		min_max_lat_lng = adjustMinMax(min_max_lat_lng, item_lat, item_lng);
+            });
+    		marker_list[item.venue_id] = poiMarker;
+    		min_max_lat_lng = adjustMinMax(min_max_lat_lng, item_lat, item_lng);
+	    }
 	});
 
 	if (has_venues) {
@@ -174,6 +247,7 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
 		the_map.fitBounds(bounds);
 	}
 	else {
+/*
 		if (user_latlng != null && !ip_geolocation) {
 			poiMarker = new google.maps.Marker({
 				position: user_latlng,
@@ -182,8 +256,16 @@ function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marke
 				icon: 'images/your_location.png'
 			});
 		}
+    	var center;
+    	if (user_latlng == null) {
+    		center = new google.maps.LatLng(40.73, -73.99);
+    	}
+    	else {
+    		center = user_latlng;
+    	}
 		the_map.setCenter(new google.maps.LatLng(center.lat(), center.lng()));
 		the_map.setZoom(12);
+*/
 	}
 }
 
@@ -391,23 +473,21 @@ function updateSearchResults(name, value) {
         timeofday = $("#controls #slider-timeofday").slider('value');
     }
     
-    var request_data = {
-        'lat': user_html5_latlng.lat(),
-        'lng': user_html5_latlng.lng(),
-        'where': encodeURIComponent(where),
-        'when': encodeURIComponent(when),
-        'local': encodeURIComponent(local),
-        'social': encodeURIComponent(social),
-        'popularity': encodeURIComponent(popularity),
-        'price': encodeURIComponent(price),
-        'timeofday': encodeURIComponent(timeofday)
-    };
+    // var request_data = {
+    //     'lat': user_html5_latlng.lat(),
+    //     'lng': user_html5_latlng.lng(),
+    //     'where': encodeURIComponent(where),
+    //     'when': encodeURIComponent(when),
+    //     'local': encodeURIComponent(local),
+    //     'social': encodeURIComponent(social),
+    //     'popularity': encodeURIComponent(popularity),
+    //     'price': encodeURIComponent(price),
+    //     'timeofday': encodeURIComponent(timeofday)
+    // };
 
-	$.getJSON('venues', request_data, function(data) {
-    	    var map_icons = {};
-    	    map_icons.venue = 'images/venue.png';
-            drawPOI(data.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
-    });
+    var map_icons = {};
+    map_icons.venue = 'images/venue.png';
+    drawPOI(serverData.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
 }
 
 $(document).ready(function(){

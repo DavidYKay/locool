@@ -35,7 +35,7 @@ class VenuesHandler(BaseHandler):
         self.req = {}
         self.req['lat'] = self.request.get("lat", default_value='40.73')
         self.req['lng'] = self.request.get("lng", default_value='-73.99')
-        self.req['where'] = self.request.get("where", default_value='New York, NY')
+        self.req['where'] = self.request.get("where") # do not provide a default value
         self.req['when'] = self.request.get("when", default_value=strftime('%m/%d/%Y'))
         self.req['local_meter'] = self.request.get("local", default_value='3')
         self.req['friend_print'] = self.request.get("social", default_value='3')
