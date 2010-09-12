@@ -35,16 +35,14 @@ div.noscript {
 #header {
     position:relative;
     clear:both;
-    padding-top: 10px;
-    padding-bottom: 10px;
 }
 
 #logo {
     background-image:url(../images/logo.png);
     background-repeat:no-repeat;
     float:left;
-    width:140px;
-    height:40px;
+    width:150px;
+    height:70px;
 }
 
 #welcome-message {
