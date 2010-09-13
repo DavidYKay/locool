@@ -22,5 +22,8 @@ handlers:
 #  script: python/places.py
 #- url: /people/(.*)
 #  script: python/people.py
+- url: /remote_api
+  script: $PYTHON_LIB/google/appengine/ext/remote_api/handler.py
+  login: admin
 - url: /.*
   script: python/main.py

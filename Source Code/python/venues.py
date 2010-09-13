@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+sys.path.append('db')
 sys.path.append('other')
 sys.path.append('facebook')
 sys.path.append('helper')
@@ -15,8 +16,10 @@ import facebook
 
 from BeautifulSoup import BeautifulSoup
 
+from Venue import Venue
 from BaseHandler import BaseHandler
 # from main import BaseHandler
+from google.appengine.ext import db
 from django.utils import simplejson
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -72,17 +75,43 @@ class VenuesHandler(BaseHandler):
         #logging.error('req_time_of_day: ' + str(req_time_of_day))
 
         #data = REST.getYelpVenues(self.req['lat'], self.req['lng'])
-        data = REST.getYelpVenues(self.req['lat'], self.req['lng'], self.req['where'])
-        #data = REST.getYelpVenues(req_lat, req_lng, req_where)
-        jsonData = simplejson.loads(data)
-        venues = self.prepYelpData(jsonData)
+        
+        logging.debug('QUERYING THE DATABASE FOR VENUES USING: ' + self.req['where'])
+        db_venues = db.GqlQuery("SELECT * "
+                                    "FROM Venue "
+                                    "WHERE location_name = :1", self.req['where'])
+        if db_venues.count() == 0:
+            logging.debug('DID NOT FIND ANY VENUES WHILE QUERYING THE DATABASE FOR VENUES USING: ' + self.req['where'])
+            data = REST.getYelpVenues(self.req['lat'], self.req['lng'], self.req['where'])
+            #data = REST.getYelpVenues(req_lat, req_lng, req_where)
+            jsonData = simplejson.loads(data)
+            venues = self.prepYelpData(jsonData, False)
+        else:
+            logging.debug('FOUND SOME VENUES WHILE QUERYING THE DATABASE FOR VENUES USING: ' + self.req['where'])
+            jsonData = {}
+            businesses = []
+            for db_venue in db_venues:
+                business = {}
+                business['name'] = db_venue.name
+                business['id'] = db_venue.venue_id
+                business['latitude'] = db_venue.lat
+                business['longitude'] = db_venue.lng
+                business['address1'] = db_venue.address_1
+                business['address2'] = db_venue.address_2
+                business['address3'] = db_venue.address_3
+                business['photo_url'] = db_venue.image_url
+                business['local'] = db_venue.local
+                business['price'] = db_venue.price
+                businesses.append(business)
+            jsonData['businesses'] = businesses
+            venues = self.prepYelpData(jsonData, True)
 
         json_result = {}
         json_result['venues'] = venues
         my_response = simplejson.dumps(json_result)
         self.response.out.write(my_response)
 
-    def prepYelpData(self, data):
+    def prepYelpData(self, data, cached):
         businesses = data['businesses']
         trimmedBiz = []
         for business in businesses:
@@ -94,15 +123,41 @@ class VenuesHandler(BaseHandler):
             newBiz['lng'] = business['longitude']
             newBiz['address1'] = business['address1']
             newBiz['address2'] = business['address2']
-            newBiz['address3'] = '%s, %s %s' % ( business['city'], business['state'], business['zip'])
+            # logging.debug('newBiz[address1] -------------->' + newBiz['address1'])
+            # logging.debug('newBiz[address2]-------------->' + newBiz['address2'])
+            if cached:
+                newBiz['address3'] = business['address3']
+                # logging.debug('newBiz[address3]-------------->' + newBiz['address3'])
+                newBiz['local'] = business['local']
+                newBiz['price'] = business['price']
+            else:
+                newBiz['address3'] = '%s, %s %s' % ( business['city'], business['state'], business['zip'])
+                # logging.debug('newBiz[address3]-------------->' + newBiz['address3'])
 
-            #scrape html
-            soup = self.getSoup(business)
-            dollars = self.getDollarSigns(soup)
-            touristScore = self.getTouristScore(soup)
+                #scrape html
+                soup = self.getSoup(business)
+                dollars = self.getDollarSigns(soup)
+                touristScore = self.getTouristScore(soup)
 
-            newBiz['price'] = dollars
-            newBiz['local'] = touristScore
+                newBiz['price'] = dollars
+                newBiz['local'] = touristScore
+
+                db_venue = Venue(venue_id = newBiz['venue_id'],
+                                     name = newBiz['name'],
+                                     lat = newBiz['lat'],
+                                     lng = newBiz['lng'])
+                db_venue.address_1 = newBiz['address1']
+                db_venue.address_2 = newBiz['address2']
+                db_venue.address_3 = newBiz['address3']
+                # logging.debug('db_venue.address_1-------------->' + db_venue.address_1)
+                # logging.debug('db_venue.address_2-------------->' + db_venue.address_2)
+                # logging.debug('db_venue.address_3-------------->' + db_venue.address_3)
+                db_venue.image_url = newBiz['image_url']
+                db_venue.location_name = self.req['where']
+                db_venue.local = newBiz['local']
+                db_venue.price = newBiz['price']
+                db_venue.put()
+                # logging.debug('PUTTING VENUE ------------------> ' + db_venue.name)
 
             trimmedBiz.append(newBiz)
 

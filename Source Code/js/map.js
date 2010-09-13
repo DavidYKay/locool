@@ -20,11 +20,12 @@ function renderPlaces() {
 				google.maps.event.addListenerOnce(the_map, 'tilesloaded', function() {
                     var request_data = {
                         'lat': user_latlng.lat(),
-                        'lng': user_latlng.lng()
+                        'lng': user_latlng.lng(),
+                        'where': 'new york, ny'
                     };
                 	$.getJSON('venues', request_data, function(data) {
             	        serverData = data;
-                        drawMapMarkers(data.venues, user_latlng, venues_map, false, map_icons, venue_markers);
+                        drawMapMarkers('where', 'new york, ny', data.venues, user_latlng, venues_map, false, map_icons, venue_markers);
                     });
 				});
 			}, 
@@ -105,7 +106,7 @@ function cleanUp() {
     
 }
 
-function drawPOI(data, user_latlng, the_map, ip_geolocation, marker_icons, marker_list) {
+function drawPOI(name, value, data, user_latlng, the_map, ip_geolocation, marker_icons, marker_list) {
     cleanUp();
 
     // ---------------------------
@@ -490,13 +491,13 @@ function updateSearchResults(name, value) {
     	        serverData = data;
         	    var map_icons = {};
         	    map_icons.venue = 'images/venue.png';
-                drawPOI(data.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
+                drawPOI(name, value, data.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
         });
     }
     else {
         var map_icons = {};
         map_icons.venue = 'images/venue.png';
-        drawPOI(serverData.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
+        drawPOI(name, value, serverData.venues, user_html5_latlng, venues_map, false, map_icons, venue_markers);
     }
 }
 
