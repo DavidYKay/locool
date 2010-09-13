@@ -17,6 +17,7 @@ import facebook
 from BeautifulSoup import BeautifulSoup
 
 from Venue import Venue
+from Yelp import Yelp
 from BaseHandler import BaseHandler
 # from main import BaseHandler
 from google.appengine.ext import db
@@ -180,12 +181,24 @@ class VenuesHandler(BaseHandler):
         return trimmedBiz
 
     def getSoup(self, business):
-        url = business['url']
-        if (url == None):
-            logging.error(business['name'] + " No URL!")
-            return 0
-        html = REST.get(url)
-        soup = BeautifulSoup(''.join(html))
+        db_yelps = db.GqlQuery("SELECT * "
+                                    "FROM Yelp "
+                                    "WHERE venue_id = :1", business['id'])
+        if db_yelps.count() == 0:
+            url = business['url']
+            if (url == None):
+                logging.error(business['name'] + " No URL!")
+                return 0
+            html = REST.get(url)
+            soup = BeautifulSoup(''.join(html))
+            
+            # db_yelp = Yelp(venue_id = business['id'],
+            #                url = business['url'])
+            # db_yelp.html = ''.join(''.join(html).splitlines())
+            # db_yelp.put()
+        else:
+            db_yelp = db_yelps.get()
+            soup = BeautifulSoup(db_yelp.html)
         return soup
 
     def getDollarSigns(self, soup):
